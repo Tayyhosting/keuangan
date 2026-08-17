@@ -15,6 +15,9 @@ COPY . .
 # Beri izin folder
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# FIX: Matikan event mpm dan aktifkan prefork mpm agar tidak bentrok (More than one MPM loaded)
+RUN a2dismod mpm_event && a2enmod mpm_prefork
+
 # Aktifkan mod_rewrite Apache
 RUN a2enmod rewrite
 
