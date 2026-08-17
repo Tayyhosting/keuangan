@@ -1,4 +1,0 @@
-providers = ["php"]
-
-[phases.setup]
-phpVersion = "8.2"
