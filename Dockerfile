@@ -12,13 +12,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Beri izin folder
+# Beri izin folder agar bisa ditulis (wajib untuk Laravel)
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# FIX: Matikan event mpm dan aktifkan prefork mpm agar tidak bentrok (More than one MPM loaded)
+# FIX: Matikan mpm_event dan aktifkan mpm_prefork agar tidak bentrok
 RUN a2dismod mpm_event && a2enmod mpm_prefork
 
-# Aktifkan mod_rewrite Apache
+# FIX: Setup port Apache agar otomatis mengikuti variabel PORT dari Railway
+RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+
+# Aktifkan mod_rewrite Apache (wajib agar routing Laravel jalan)
 RUN a2enmod rewrite
 
 # Ubah document root ke folder 'public'
